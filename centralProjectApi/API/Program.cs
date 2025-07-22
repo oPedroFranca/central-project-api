@@ -2,7 +2,6 @@ using centralProjectApi.Application.Interfaces;
 using centralProjectApi.Application.Services;
 using centralProjectApi.Infrastructure.Data;
 using centralProjectApi.Infrastructure.Repositories;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;

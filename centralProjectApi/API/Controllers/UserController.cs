@@ -1,12 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 using centralProjectApi.Application.DTOs;
 using centralProjectApi.Application.Interfaces;
 using centralProjectApi.Application.Exceptions;
@@ -18,12 +10,10 @@ namespace centralProjectApi.API.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-        private readonly IConfiguration _configuration;
 
-        public UserController(IUserService userService, IConfiguration configuration)
+        public UserController(IUserService userService)
         {
             _userService = userService;
-            _configuration = configuration;
         }
 
         // POST: api/auth/login
@@ -33,8 +23,7 @@ namespace centralProjectApi.API.Controllers
             try
             {
                 await _userService.ValidateCredentialsAsync(model.Email, model.Password);
-
-                var token = GenerateJwtToken(model.Email);
+                var token = _userService.GenerateJwtToken(model.Email);
 
                 return Ok(new { Token = token });
             }
@@ -69,28 +58,6 @@ namespace centralProjectApi.API.Controllers
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
-        }
-
-        // Método para gerar um JWT (JSON Web Token)
-        private string GenerateJwtToken(string email)
-        {
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, email)
-            };
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            var token = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Audience"],
-                claims: claims,
-                expires: DateTime.Now.AddHours(1),
-                signingCredentials: creds
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }

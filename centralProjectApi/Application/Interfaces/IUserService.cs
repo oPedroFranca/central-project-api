@@ -7,6 +7,7 @@ namespace centralProjectApi.Application.Interfaces
     {
         Task<bool> ValidateCredentialsAsync(string email, string password);
         Task Register(UserRegisterDto user);
+        string GenerateJwtToken(string email);
         void Update(int id, User user);
         void Delete(int id);
     }

@@ -1,19 +1,23 @@
-﻿using centralProjectApi.Application.DTOs;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using centralProjectApi.Application.DTOs;
 using centralProjectApi.Application.Exceptions;
 using centralProjectApi.Application.Interfaces;
 using centralProjectApi.Domain.Entities;
-using centralProjectApi.Infrastructure.Data;
-using centralProjectApi.Infrastructure.Repositories;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace centralProjectApi.Application.Services
 {
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
-        public UserService(IUserRepository userRepository)
+        private readonly IConfiguration _configuration;
+
+        public UserService(IUserRepository userRepository, IConfiguration configuration)
         {
             _userRepository = userRepository;
+            _configuration = configuration;
         }
 
         public async Task<bool> ValidateCredentialsAsync(string email, string password)
@@ -61,6 +65,27 @@ namespace centralProjectApi.Application.Services
         public void Delete(int id)
         {
             Console.WriteLine($"User with ID {id} deleted successfully.");
+        }
+
+        public string GenerateJwtToken(string email)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, email)
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                claims: claims,
+                expires: DateTime.Now.AddHours(1),
+                signingCredentials: creds
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }
