@@ -27,18 +27,9 @@ namespace centralProjectApi.API.Controllers
 
                 return Ok(new { Token = token });
             }
-            catch (InvalidOperationException ex)
-            {
-                return Unauthorized(ex.Message);
-            }
-            catch (UserAlreadyExistsException ex)
-            {
-                return Conflict(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+            catch (InvalidOperationException ex) { return Unauthorized(ex.Message); }
+            catch (UserAlreadyExistsException ex) { return Conflict(ex.Message); }
+            catch (Exception ex) { return StatusCode(500, $"Internal server error: {ex.Message}"); }
         }
 
         [HttpPost("register")]
@@ -48,16 +39,10 @@ namespace centralProjectApi.API.Controllers
             {
                 await _userService.Register(model);
 
-                return Ok("User registered successfully");
+                return Ok(new { message = "User registered successfully" });
             }
-            catch (UserAlreadyExistsException ex)
-            {
-                return Conflict(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+            catch (UserAlreadyExistsException ex) { return Conflict(ex.Message); }
+            catch (Exception ex) { return StatusCode(500, $"Internal server error: {ex.Message}"); }
         }
     }
 }
