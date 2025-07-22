@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using centralProjectApi.Application.DTOs;
 using centralProjectApi.Application.Interfaces;
+using centralProjectApi.Application.Exceptions;
 
 namespace centralProjectApi.API.Controllers
 {
@@ -29,25 +30,40 @@ namespace centralProjectApi.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserLoginDto model)
         {
-            var isValid = await _userService.ValidateCredentials(model.Email, model.Password);
+            try
+            {
+                await _userService.ValidateCredentialsAsync(model.Email, model.Password);
 
-            if (!isValid)
-                return Unauthorized("Invalid credentials");
+                var token = GenerateJwtToken(model.Email);
 
-            var token = GenerateJwtToken(model.Email);
-
-            return Ok(new { Token = token });
+                return Ok(new { Token = token });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+            catch (UserAlreadyExistsException ex)
+            {
+                return Conflict(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         [HttpPost("register")]
-        public IActionResult Register([FromBody] UserRegisterDto model)
+        public async Task<IActionResult> Register([FromBody] UserRegisterDto model)
         {
-            if (model == null || string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Password))
-                return BadRequest("Invalid user data");
             try
             {
-                _userService.Register(model);
+                await _userService.Register(model);
+
                 return Ok("User registered successfully");
+            }
+            catch (UserAlreadyExistsException ex)
+            {
+                return Conflict(ex.Message);
             }
             catch (Exception ex)
             {

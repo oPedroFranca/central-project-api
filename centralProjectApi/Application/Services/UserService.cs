@@ -1,4 +1,5 @@
 ﻿using centralProjectApi.Application.DTOs;
+using centralProjectApi.Application.Exceptions;
 using centralProjectApi.Application.Interfaces;
 using centralProjectApi.Domain.Entities;
 using centralProjectApi.Infrastructure.Data;
@@ -15,14 +16,32 @@ namespace centralProjectApi.Application.Services
             _userRepository = userRepository;
         }
 
-        public async Task<bool> ValidateCredentials(string email, string password)
+        public async Task<bool> ValidateCredentialsAsync(string email, string password)
         {
-            var user = await _userRepository.GetUserByEmailAsync(email, password);
-            return user != null;
-        }
+            var existingUser = await _userRepository.DoesEmailExistAsync(email);
 
+            if (!existingUser)
+            {
+                throw new InvalidOperationException("User not found.");
+            }
+
+            var user = await _userRepository.GetUserByEmailAsync(email, password);
+
+            if (user == null)
+            {
+                throw new UnauthorizedAccessException("Incorrect password");
+            }
+
+            return true;
+        }
         public async Task Register(UserRegisterDto userDto)
         {
+            var existingUser = await _userRepository.DoesEmailExistAsync(userDto.Email);
+            if (existingUser)
+                {
+                throw new UserAlreadyExistsException("User with this email already exists.");
+            }
+
             var user = new User
             {
                 Name = userDto.Name,
