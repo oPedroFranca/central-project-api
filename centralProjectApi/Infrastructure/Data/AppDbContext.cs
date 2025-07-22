@@ -1,7 +1,7 @@
-﻿using centralProjectApi.Models;
+﻿using centralProjectApi.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace centralProjectApi.Data
+namespace centralProjectApi.Infrastructure.Data
 {
     public class AppDbContext : DbContext
     {

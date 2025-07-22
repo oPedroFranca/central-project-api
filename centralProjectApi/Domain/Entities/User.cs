@@ -1,4 +1,4 @@
-﻿namespace centralProjectApi.Models
+﻿namespace centralProjectApi.Domain.Entities
 {
     public class User
     {

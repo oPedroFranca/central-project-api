@@ -1,4 +1,4 @@
-﻿namespace centralProjectApi.Models.DTO
+﻿namespace centralProjectApi.Application.DTOs
 {
     public class UserLoginDto
     {

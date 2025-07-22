@@ -27,9 +27,9 @@ namespace centralProjectApi.API.Controllers
 
         // POST: api/auth/login
         [HttpPost("login")]
-        public IActionResult Login([FromBody] UserLoginDto model)
+        public async Task<IActionResult> Login([FromBody] UserLoginDto model)
         {
-            var isValid = _userService.ValidateCredentials(model.Email, model.Password);
+            var isValid = await _userService.ValidateCredentials(model.Email, model.Password);
 
             if (!isValid)
                 return Unauthorized("Invalid credentials");
