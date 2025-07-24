@@ -6,7 +6,7 @@ using centralProjectApi.Application.Exceptions;
 namespace centralProjectApi.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -16,8 +16,8 @@ namespace centralProjectApi.API.Controllers
             _userService = userService;
         }
 
-        // POST: api/auth/login
-        [HttpPost("login")]
+        // POST: /auth/login
+        [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] UserLoginDto model)
         {
             try
@@ -32,7 +32,7 @@ namespace centralProjectApi.API.Controllers
             catch (Exception ex) { return StatusCode(500, $"Internal server error: {ex.Message}"); }
         }
 
-        [HttpPost("register")]
+        [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody] UserRegisterDto model)
         {
             try
