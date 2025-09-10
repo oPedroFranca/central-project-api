@@ -29,7 +29,7 @@ namespace centralProjectApi.Application.Services
                 throw new InvalidOperationException("User not found.");
             }
 
-            var user = await _userRepository.GetUserByEmailAsync(email, password);
+            var user = await _userRepository.ValidateUserCredentialsAsync(email, password);
 
             if (user == null)
             {
@@ -57,6 +57,11 @@ namespace centralProjectApi.Application.Services
             await _userRepository.AddUserAsync(user);
         }
 
+        public async Task<User> GetUserByEmailOnlyAsync(string email)
+        {
+            return await _userRepository.GetUserByEmailOnlyAsync(email);
+        }
+
         public void Update(int id, User user)
         {
             Console.WriteLine($"User with ID {id} updated successfully.");
@@ -67,11 +72,12 @@ namespace centralProjectApi.Application.Services
             Console.WriteLine($"User with ID {id} deleted successfully.");
         }
 
-        public string GenerateJwtToken(string email)
+        public string GenerateJwtToken(User user)
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, email)
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.Email)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
@@ -81,7 +87,7 @@ namespace centralProjectApi.Application.Services
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddHours(1),
+                expires: DateTime.UtcNow.AddHours(5),
                 signingCredentials: creds
             );
 

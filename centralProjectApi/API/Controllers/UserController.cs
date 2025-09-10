@@ -23,7 +23,9 @@ namespace centralProjectApi.API.Controllers
             try
             {
                 await _userService.ValidateCredentialsAsync(dto.Email, dto.Password);
-                var token = _userService.GenerateJwtToken(dto.Email);
+
+                var user = await _userService.GetUserByEmailOnlyAsync(dto.Email);
+                var token = _userService.GenerateJwtToken(user);
 
                 return Ok(new { success = true, Token = token });
             }

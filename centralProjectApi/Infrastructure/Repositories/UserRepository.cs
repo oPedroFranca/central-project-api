@@ -19,9 +19,14 @@ namespace centralProjectApi.Infrastructure.Repositories
             return await _context.Users.AnyAsync(u => u.Email == email);
         }
 
-        public async Task<User> GetUserByEmailAsync(string email, string password)
+        public async Task<User> ValidateUserCredentialsAsync(string email, string password)
         {
             return await _context.Users.FirstOrDefaultAsync(user => user.Email == email && user.Password == password);
+        }
+
+        public async Task<User> GetUserByEmailOnlyAsync(string email)
+        {
+            return await _context.Users.FirstOrDefaultAsync(user => user.Email == email);
         }
 
         public async Task<User> AddUserAsync(User user)

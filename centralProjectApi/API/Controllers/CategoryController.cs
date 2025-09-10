@@ -1,5 +1,6 @@
 ﻿using centralProjectApi.Application.DTOs;
 using centralProjectApi.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace centralProjectApi.API.Controllers
@@ -15,6 +16,7 @@ namespace centralProjectApi.API.Controllers
             _categoryService = categoryService;
         }
 
+        [Authorize]
         [HttpPost("CreateCategory")]
         public async Task<IActionResult> CreateCategory([FromBody] CategoryCreateDto dto)
         {
