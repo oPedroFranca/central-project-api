@@ -6,14 +6,12 @@ namespace centralProjectApi.Application.Exceptions
     public class UserAlreadyExistsException : Exception
     {
         // Construtor que recebe a mensagem personalizada
-        public UserAlreadyExistsException(string message)
-            : base(message)
+        public UserAlreadyExistsException(string message) : base(message)
         {
         }
 
         // Construtor que também recebe a mensagem e uma exceção interna (para encadeamento de exceções)
-        public UserAlreadyExistsException(string message, Exception innerException)
-            : base(message, innerException)
+        public UserAlreadyExistsException(string message, Exception innerException) : base(message, innerException)
         {
         }
     }

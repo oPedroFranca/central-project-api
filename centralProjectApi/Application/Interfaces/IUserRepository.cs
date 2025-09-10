@@ -1,5 +1,4 @@
-﻿using centralProjectApi.Application.DTOs;
-using centralProjectApi.Domain.Entities;
+﻿using centralProjectApi.Domain.Entities;
 
 namespace centralProjectApi.Application.Interfaces
 {

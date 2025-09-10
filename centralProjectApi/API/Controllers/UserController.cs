@@ -18,14 +18,14 @@ namespace centralProjectApi.API.Controllers
 
         // POST: /auth/login
         [HttpPost("Login")]
-        public async Task<IActionResult> Login([FromBody] UserLoginDto model)
+        public async Task<IActionResult> Login([FromBody] UserLoginDto dto)
         {
             try
             {
-                await _userService.ValidateCredentialsAsync(model.Email, model.Password);
-                var token = _userService.GenerateJwtToken(model.Email);
+                await _userService.ValidateCredentialsAsync(dto.Email, dto.Password);
+                var token = _userService.GenerateJwtToken(dto.Email);
 
-                return Ok(new { Token = token });
+                return Ok(new { success = true, Token = token });
             }
             catch (InvalidOperationException ex) { return Unauthorized(ex.Message); }
             catch (UserAlreadyExistsException ex) { return Conflict(ex.Message); }
@@ -33,13 +33,13 @@ namespace centralProjectApi.API.Controllers
         }
 
         [HttpPost("Register")]
-        public async Task<IActionResult> Register([FromBody] UserRegisterDto model)
+        public async Task<IActionResult> Register([FromBody] UserRegisterDto dto)
         {
             try
             {
-                await _userService.Register(model);
+                await _userService.Register(dto);
 
-                return Ok(new { message = "User registered successfully" });
+                return Ok(new { success = true, message = "User registered successfully" });
             }
             catch (UserAlreadyExistsException ex) { return Conflict(ex.Message); }
             catch (Exception ex) { return StatusCode(500, $"Internal server error: {ex.Message}"); }

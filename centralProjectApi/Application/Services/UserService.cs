@@ -42,7 +42,7 @@ namespace centralProjectApi.Application.Services
         {
             var existingUser = await _userRepository.DoesEmailExistAsync(userDto.Email);
             if (existingUser)
-                {
+            {
                 throw new UserAlreadyExistsException("User with this email already exists.");
             }
 
