@@ -20,8 +20,6 @@ namespace centralProjectApi.API.Controllers
         [HttpPost("CreateCategory")]
         public async Task<IActionResult> CreateCategory([FromBody] CategoryCreateDto dto)
         {
-            if (dto == null || string.IsNullOrEmpty(dto.Name)) return BadRequest("Invalid category data");
-
             try
             {
                 await _categoryService.CreateCategoryAsync(dto);

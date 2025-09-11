@@ -1,19 +1,18 @@
 ﻿using centralProjectApi.Application.DTOs;
 using centralProjectApi.Application.Interfaces;
 using centralProjectApi.Domain.Entities;
-using System.Security.Claims;
 
 namespace centralProjectApi.Application.Services
 {
     public class CategoryService : ICategoryService
     {
         private readonly ICategoryRepository _categoryRepository;
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IUserContextService _userContextService;
 
-        public CategoryService(ICategoryRepository categoryRepository, IHttpContextAccessor httpContextAccessor)
+        public CategoryService(ICategoryRepository categoryRepository, IUserContextService userContextService)
         {
-            _categoryRepository = categoryRepository;
-            _httpContextAccessor = httpContextAccessor;
+            _categoryRepository  = categoryRepository;
+            _userContextService  = userContextService;
         }
 
         public async Task CreateCategoryAsync(CategoryCreateDto categoryDto)
@@ -21,10 +20,7 @@ namespace centralProjectApi.Application.Services
             if (string.IsNullOrWhiteSpace(categoryDto.Name))
                 throw new ArgumentException("Category name is required");
 
-            var userIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier);
-
-            if (userIdClaim == null || !Guid.TryParse(userIdClaim.Value, out var userId))
-                throw new UnauthorizedAccessException("Invalid or missing user token.");
+            var userId = _userContextService.GetCurrentUserId();
 
             var category = new Category
             {
