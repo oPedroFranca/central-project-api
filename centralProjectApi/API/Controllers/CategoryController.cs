@@ -29,5 +29,19 @@ namespace centralProjectApi.API.Controllers
             catch { return StatusCode(500, "An unexpected error occurred. Try again later."); }
         }
 
+        [Authorize]
+        [HttpGet("ListCategory")]
+        public async Task<IActionResult> ListCategories()
+        {
+            try
+            {
+                var categories = await _categoryService.GetUserCategoriesAsync();
+                return Ok(categories);
+            }
+            catch
+            {
+                return StatusCode(500, "An unexpected error occurred while fetching categories.");
+            }
+        }
     }
 }

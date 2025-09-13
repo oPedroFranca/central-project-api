@@ -1,10 +1,11 @@
 ﻿using centralProjectApi.Application.DTOs;
-using System.Threading.Tasks;
+using centralProjectApi.Domain.Entities;
 
 namespace centralProjectApi.Application.Interfaces
 {
     public interface ICategoryService
     {
+        Task<List<CategoryDto>> GetUserCategoriesAsync();
         Task CreateCategoryAsync(CategoryCreateDto categoryDto);
     }
 }

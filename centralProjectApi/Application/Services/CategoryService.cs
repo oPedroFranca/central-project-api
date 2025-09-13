@@ -15,6 +15,21 @@ namespace centralProjectApi.Application.Services
             _userContextService  = userContextService;
         }
 
+        public async Task<List<CategoryDto>> GetUserCategoriesAsync()
+        {
+            var userId = _userContextService.GetCurrentUserId();
+
+            var categories = await _categoryRepository.GetCategoriesByUserIdAsync(userId);
+
+            return categories.Select(category => new CategoryDto
+            {
+                Id = category.Id,
+                Name = category.Name,
+                Description = category.Description,
+                CreatedAt = category.CreatedAt
+            }).ToList();
+        }
+
         public async Task CreateCategoryAsync(CategoryCreateDto categoryDto)
         {
             if (string.IsNullOrWhiteSpace(categoryDto.Name))
@@ -33,5 +48,6 @@ namespace centralProjectApi.Application.Services
 
             await _categoryRepository.AddCategoryAsync(category);
         }
+
     }
 }
