@@ -6,5 +6,8 @@ namespace centralProjectApi.Application.Interfaces
     {
         Task<List<Category>> GetCategoriesByUserIdAsync(Guid userId);
         Task AddCategoryAsync(Category category);
+        Task<Category?> GetCategoryByIdAsync(int categoryId);
+        Task UpdateCategoryAsync(Category category);
+        Task DeleteCategoryAsync(int categoryId);
     }
 }

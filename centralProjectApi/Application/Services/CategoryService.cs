@@ -49,5 +49,27 @@ namespace centralProjectApi.Application.Services
             await _categoryRepository.AddCategoryAsync(category);
         }
 
+        public async Task UpdateCategoryAsync(CategoryUpdateDto categoryDto)
+        {
+            var category = await _categoryRepository.GetCategoryByIdAsync(categoryDto.Id);
+            if (category == null) throw new KeyNotFoundException("Category not found");
+
+            if (!string.IsNullOrWhiteSpace(categoryDto.Name)) category.Name = categoryDto.Name;
+
+            if (categoryDto.Description != null) category.Description = categoryDto.Description;
+
+            category.UpdatedAt = DateTime.UtcNow;
+
+            await _categoryRepository.UpdateCategoryAsync(category);
+        }
+
+        public async Task DeleteCategoryAsync(int categoryId)
+        {
+            var category = await _categoryRepository.GetCategoryByIdAsync(categoryId);
+            if (category == null) throw new KeyNotFoundException("Category not found");
+
+            await _categoryRepository.DeleteCategoryAsync(categoryId);
+        }
+
     }
 }
