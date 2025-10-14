@@ -54,16 +54,11 @@ namespace centralProjectApi.Application.Services
             var category = await _categoryRepository.GetCategoryByIdAsync(categoryDto.Id);
             if (category == null) throw new KeyNotFoundException("Category not found");
 
-            // Atualiza apenas os campos necessários
-            if (!string.IsNullOrWhiteSpace(categoryDto.Name))
-                category.Name = categoryDto.Name;
+            if (!string.IsNullOrWhiteSpace(categoryDto.Name)) category.Name = categoryDto.Name;
 
-            if (categoryDto.Description != null)
-                category.Description = categoryDto.Description;
+            if (categoryDto.Description != null) category.Description = categoryDto.Description;
 
             category.UpdatedAt = DateTime.UtcNow;
-
-            // Não altera o userId
 
             await _categoryRepository.UpdateCategoryAsync(category);
         }
