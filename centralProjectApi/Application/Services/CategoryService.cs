@@ -54,22 +54,26 @@ namespace centralProjectApi.Application.Services
             var category = await _categoryRepository.GetCategoryByIdAsync(categoryDto.Id);
             if (category == null) throw new KeyNotFoundException("Category not found");
 
-            if (!string.IsNullOrWhiteSpace(categoryDto.Name)) category.Name = categoryDto.Name;
+            // Atualiza apenas os campos necessários
+            if (!string.IsNullOrWhiteSpace(categoryDto.Name))
+                category.Name = categoryDto.Name;
 
-            if (categoryDto.Description != null) category.Description = categoryDto.Description;
+            if (categoryDto.Description != null)
+                category.Description = categoryDto.Description;
 
             category.UpdatedAt = DateTime.UtcNow;
+
+            // Não altera o userId
 
             await _categoryRepository.UpdateCategoryAsync(category);
         }
 
-        public async Task DeleteCategoryAsync(int categoryId)
+        public async Task DeleteCategoryAsync(Guid categoryId)
         {
             var category = await _categoryRepository.GetCategoryByIdAsync(categoryId);
             if (category == null) throw new KeyNotFoundException("Category not found");
 
             await _categoryRepository.DeleteCategoryAsync(categoryId);
         }
-
     }
 }

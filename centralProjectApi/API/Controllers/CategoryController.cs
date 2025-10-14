@@ -53,15 +53,19 @@ namespace centralProjectApi.API.Controllers
                 await _categoryService.UpdateCategoryAsync(dto);
                 return Ok(new { success = true, message = "Category updated successfully" });
             }
-            catch
+            catch (KeyNotFoundException ex)
             {
-                return StatusCode(500, "An unexpected error occurred while updating the category.");
+                return NotFound(new { success = false, message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "Erro inesperado ao atualizar categoria.", details = ex.Message });
             }
         }
 
         [Authorize]
         [HttpDelete("DeleteCategory")]
-        public async Task<IActionResult> DeleteCategory(int categoryId)
+        public async Task<IActionResult> DeleteCategory(Guid categoryId)
         {
             try
             {

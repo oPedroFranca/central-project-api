@@ -8,6 +8,6 @@ namespace centralProjectApi.Application.Interfaces
         Task<List<CategoryDto>> GetUserCategoriesAsync();
         Task CreateCategoryAsync(CategoryCreateDto categoryDto);
         Task UpdateCategoryAsync(CategoryUpdateDto categoryDto);
-        Task DeleteCategoryAsync(int categoryId);
+        Task DeleteCategoryAsync(Guid categoryId);
     }
 }
