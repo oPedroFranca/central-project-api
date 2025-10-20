@@ -1,5 +1,6 @@
 using centralProjectApi.Application.Interfaces;
 using centralProjectApi.Application.Services;
+using centralProjectApi.Domain.Interfaces;
 using centralProjectApi.Infrastructure.Data;
 using centralProjectApi.Infrastructure.Repositories;
 using centralProjectApi.Infrastructure.Services;
@@ -36,7 +37,7 @@ builder.Services.AddAuthentication("Bearer")
             {
                 context.Response.StatusCode = 401;
                 context.Response.ContentType = "application/json";
-                return context.Response.WriteAsync("{\"error\":\"Token inválido ou expirado.\"}");
+                return context.Response.WriteAsync("{\"error\":\"Token invï¿½lido ou expirado.\"}");
             },
             OnChallenge = context =>
             {
@@ -44,7 +45,7 @@ builder.Services.AddAuthentication("Bearer")
                 context.Response.StatusCode = 401;
                 context.Response.ContentType = "application/json";
 
-                return context.Response.WriteAsync("{\"error\":\"Token não fornecido ou inválido.\"}");
+                return context.Response.WriteAsync("{\"error\":\"Token nï¿½o fornecido ou invï¿½lido.\"}");
             }
         };
     });
@@ -96,12 +97,14 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<IProjectCardService, ProjectCardService>();
+builder.Services.AddScoped<ICardProjectRepository, CardProjectRepository>();
+builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IUserContextService, UserContextService>();
+
 
 builder.Services.AddHttpContextAccessor();
 
